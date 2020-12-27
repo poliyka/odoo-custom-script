@@ -53,8 +53,16 @@ ADMIN_EMAIL="odoo@example.com"
 WKHTMLTOX_X64=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb
 WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_i386.deb
 #--------------------------------------------------
-# Add project folder
+# Initialize Data
 #--------------------------------------------------
+echo -e "* Force Remove old project conf"
+sudo rm -f /etc/${OE_CONFIG}.conf
+
+echo -e "* Stoping and Remove Odoo Service"
+sudo su root -c "/etc/init.d/$OE_CONFIG stop"
+sudo rm -f /etc/init.d/$OE_CONFIG
+
+echo -e "* Create project folder"
 sudo su $OE_USER -c "mkdir ~/$OE_FOLDER"
 
 #--------------------------------------------------
