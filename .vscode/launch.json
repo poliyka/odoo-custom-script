@@ -5,7 +5,7 @@
             "name": "odoo",
             "type": "python",
             "request": "launch",
-            "python": "~/.local/share/virtualenvs/odoo-project-RhqrRy0p/bin/python3.8",
+            "python": "/home/odoo/.local/share/virtualenvs/odoo-project-RhqrRy0p/bin/python3.8",
             "program": "~/odoo-project/odoo-server/odoo-bin",
             "args": [
                 "--syslog",

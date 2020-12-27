@@ -55,6 +55,7 @@ make run
 7. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
 ```sh
 # Change odoo-project to your folder name of project
+# Change "python": "/home/(your username)/...
 # Change RhqrRy0p to your virtualenvs environment
 {
     "version": "0.2.0",
@@ -63,7 +64,7 @@ make run
             "name": "odoo",
             "type": "python",
             "request": "launch",
-            "python": "~/.local/share/virtualenvs/odoo-project-RhqrRy0p/bin/python3.8",
+            "python": "/home/odoo/.local/share/virtualenvs/odoo-project-RhqrRy0p/bin/python3.8",
             "program": "~/odoo-project/odoo-server/odoo-bin",
             "args": [
                 "--syslog",
