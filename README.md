@@ -31,28 +31,28 @@ sudo /etc/init.d/postgresql start
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 ```
 
-4. Execute the script
+3. Execute the script
 ```sh
 sudo ./odoo_install_custom.sh
 ```
 
-3. Install wkhtmltopdf if you want to upgrade. =>
+4. Install wkhtmltopdf if you want to upgrade. =>
 [Reference](https://computingforgeeks.com/install-wkhtmltopdf-on-ubuntu-debian-linux/)
 
-4. Move `Pipfile` 、 `Pipfile.lock` 、 `Makefile` in your project folder.
+5. Move `Pipfile` 、 `Pipfile.lock` 、 `Makefile` in your project folder.
 
-5. I use `pipenv` with python3.8 and Odoo 14.0 requirements.
+6. I use `pipenv` with python3.8 and Odoo 14.0 requirements.
 ```sh
 # In your project folder
 pipenv install
 ```
 
-6. Run server
+7. Run server
 ```sh
 make run
 ```
 
-7. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
+8. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
 ```sh
 # Change odoo-project to your folder name of project
 # Change "python": "/home/(your username)/...
