@@ -62,9 +62,6 @@ echo -e "* Stoping and Remove Odoo Service"
 sudo su root -c "/etc/init.d/$OE_CONFIG stop"
 sudo rm -f /etc/init.d/$OE_CONFIG
 
-echo -e "* Create project folder"
-sudo su $OE_USER -c "mkdir ~/$OE_FOLDER"
-
 #--------------------------------------------------
 # Update Server
 #--------------------------------------------------
@@ -121,6 +118,9 @@ echo -e "\n---- Create ODOO system user ----"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
+
+echo -e "* Create project folder"
+sudo su $OE_USER -c "mkdir ~/$OE_FOLDER"
 
 echo -e "\n---- Create Log directory ----"
 sudo mkdir /var/log/$OE_USER
