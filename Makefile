@@ -1,5 +1,7 @@
 PYVENV_PREFIX=pipenv run
-LOG_MODE=INFO
+db?=odoo
+md?=$(md)
+path = ./custom/addons
 # Logging reference
 # https://www.odoo.com/documentation/14.0/reference/cmdline.html
 # https://odoo-development.readthedocs.io/en/latest/admin/log-handler.html#usefull-logs
@@ -12,4 +14,10 @@ lint:
 	$(PYVENV_PREFIX) flake8 custom
 
 run:
-	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin --syslog --log-handler :$(LOG_MODE) -c /etc/odoo-server.conf
+	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -c /etc/odoo-server.conf
+
+migrate:
+	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -u $(md) -d $(db) -c /etc/odoo-server.conf
+
+shell:
+	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin shell -d $(db) --addons-path='$(path)'
