@@ -297,7 +297,7 @@ cat <<EOF > ~/$OE_CONFIG
 # Description: ODOO Business Applications
 ### END INIT INFO
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
-PYTHON_PATH=/home/$OE_USER/$PYTHON_PATH/bin/python3
+PYTHON_PATH=$PYTHON_PATH/bin/python3
 DAEMON=$OE_HOME_EXT/odoo-bin
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
