@@ -14,10 +14,11 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="poliyka"
 OE_FOLDER="odoo-project"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
+INSTALL_BY_PIPENV_VENV="True"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
@@ -87,10 +88,12 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
 sudo apt-get install git python3 python3-pip build-essential wget make vim python3-dev python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libpng12-0 libjpeg-dev gdebi python3-virtualenv -y
-
-echo -e "\n---- Install python packages/requirements ----"
-sudo -H pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
 sudo pip3 install pipenv
+
+if [ $INSTALL_BY_PIPENV_VENV = "False" ]; then
+  echo -e "\n---- Install python packages/requirements ----"
+  sudo -H pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
+fi
 
 echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
 sudo apt-get install nodejs npm -y
@@ -162,6 +165,14 @@ echo -e "\n---- Create custom module directory ----"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
+
+sudo su $OE_USER -c "cp /home/${OE_USER}/odoo-custom-script/Makefile ${OE_HOME}"
+if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
+  echo -e "\n---- Install pipenv env -----"
+  wget https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt -P $OE_HOME
+  sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r requirements.txt"
+fi
+
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
 
@@ -181,7 +192,7 @@ if [ $OE_VERSION > "11.0" ];then
 else
     sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
 fi
-sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf ';logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
