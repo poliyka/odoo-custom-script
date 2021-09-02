@@ -17,7 +17,7 @@ lint:
 run:
 	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -c $(conf)
 
-migrate:
+update:
 	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -u $(md) -d $(db) -c $(conf)
 
 shell:
