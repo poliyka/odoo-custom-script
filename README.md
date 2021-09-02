@@ -39,20 +39,12 @@ sudo ./odoo_install_custom.sh
 4. Install wkhtmltopdf if you want to upgrade. =>
 [Reference](https://computingforgeeks.com/install-wkhtmltopdf-on-ubuntu-debian-linux/)
 
-5. Move `Pipfile` 、 `Pipfile.lock` 、 `Makefile` in your project folder.
-
-6. I use `pipenv` with python3.8 and Odoo 14.0 requirements.
-```sh
-# In your project folder
-pipenv install
-```
-
-7. Run server
+5. Run server
 ```sh
 make run
 ```
 
-8. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
+6. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
 ```sh
 # Change odoo-project to your folder name of project
 # Change "python": "/home/(your username)/...
