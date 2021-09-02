@@ -14,7 +14,7 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="poliyka"
+OE_USER="odoo"
 OE_FOLDER="odoo-project"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
