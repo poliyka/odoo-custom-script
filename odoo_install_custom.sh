@@ -14,8 +14,8 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="poliyka"
-OE_FOLDER="twstock"
+OE_USER="odoo"
+OE_FOLDER="odoo-project"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
 # Install by pipenv-venv
@@ -36,7 +36,7 @@ INSTALL_NGINX="False"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="False"
-OE_CONFIG="twstock-server-config"
+OE_CONFIG="odoo-server-config"
 # Set the website name
 WEBSITE_NAME="_"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
@@ -88,7 +88,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
-sudo apt-get install git python3 python3-pip build-essential wget make vim python3-dev -y
+sudo apt-get install git python3 python3-pip build-essential wget make vim python3-dev libpq-dev -y
 sudo apt-get install python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev -y
 sudo apt-get install python3-setuptools node-less libpng12-0 libjpeg-dev gdebi python3-virtualenv -y
 
