@@ -12,25 +12,12 @@ sudo chmod +x odoo_install_custom.sh
 ```sh
 OE_USER="odoo" #Change your username
 OE_FOLDER="odoo-project" #your project name
+OE_CONFIG="${OE_FOLDER}-server"
 
-# Here I change default path
+# RePath
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
 
-# Initialize Data
-echo -e "* Force Remove old project conf"
-sudo rm -f /etc/${OE_CONFIG}.conf
-
-echo -e "* Stoping and Remove Odoo Service"
-sudo su root -c "/etc/init.d/$OE_CONFIG stop"
-sudo rm -f /etc/init.d/$OE_CONFIG
-
-echo -e "* Create project folder"
-sudo su $OE_USER -c "mkdir ~/$OE_FOLDER"
-
-# Always start postgresql brfore create user
-sudo /etc/init.d/postgresql start
-sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 ```
 
 3. Execute the script
