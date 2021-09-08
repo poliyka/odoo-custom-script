@@ -54,6 +54,21 @@ ADMIN_EMAIL="odoo@example.com"
 
 WKHTMLTOX_X64=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb
 WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_i386.deb
+
+#--------------------------------------------------
+# Echo Color
+#--------------------------------------------------
+RED="\033[0;31m"
+NC="\033[0m"
+
+#--------------------------------------------------
+# Check OE_HOME
+#--------------------------------------------------
+if [[ -d "${OE_HOME}" ]]; then
+  echo -e "${RED}${OE_HOME} already exists.${NC}"
+  exit 1
+fi
+
 #--------------------------------------------------
 # Initialize Data
 #--------------------------------------------------
