@@ -14,8 +14,8 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="odoo"
-OE_FOLDER="odoo-project"
+OE_USER="poliyka"
+OE_FOLDER="twstock"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
 # Install by pipenv-venv
@@ -36,7 +36,7 @@ INSTALL_NGINX="False"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="False"
-OE_CONFIG="odoo-server-config"
+OE_CONFIG="twstock-server-config"
 # Set the website name
 WEBSITE_NAME="_"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
@@ -213,9 +213,9 @@ test:
 
 EOF
 
-
   echo -e "\n---- Install pipenv env -----"
-  sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r /home/${OE_USER}/odoo-custom-script/requirements.txt"
+  cp requirements.txt ${OE_HOME}
+  sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r ${OE_HOME}/requirements.txt"
 fi
 
 echo -e "\n---- Setting permissions on home folder ----"
