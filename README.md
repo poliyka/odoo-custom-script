@@ -1,5 +1,7 @@
 # Odoo 14.0 客製化安裝腳本說明
 
+This is fork form [Yenthe666/InstallScript](https://github.com/Yenthe666/InstallScript)
+
 1. Make the script executable
 
 ```sh
