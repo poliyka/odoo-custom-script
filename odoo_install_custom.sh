@@ -36,7 +36,7 @@ INSTALL_NGINX="False"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="False"
-OE_CONFIG="odoo-server-config"
+OE_CONFIG="${OE_FOLDER}-server"
 # Set the website name
 WEBSITE_NAME="_"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
