@@ -10,7 +10,7 @@ sudo chmod +x odoo_install_custom.sh
 
 2. Modify the parameters as you wish.
 ```sh
-OE_USER="odoo" #Change your username
+OE_USER="odoo" #your system username
 OE_FOLDER="odoo-project" #your project name
 OE_CONFIG="${OE_FOLDER}-server"
 ```
