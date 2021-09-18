@@ -15,7 +15,7 @@
 ################################################################################
 
 OE_USER="odoo"
-OE_FOLDER="odoo-project"
+OE_FOLDER="odoo"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
 # Install by pipenv-venv
@@ -229,6 +229,7 @@ test:
 EOF
 
   echo -e "\n---- Install pipenv env -----"
+  wget https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
   cp requirements.txt ${OE_HOME}
   sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r ${OE_HOME}/requirements.txt"
 fi
