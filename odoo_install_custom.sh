@@ -107,6 +107,7 @@ sudo apt-get install python3-setuptools node-less libpng12-0 libjpeg-dev gdebi p
 if [ $INSTALL_BY_PIPENV_VENV = "False" ]; then
   echo -e "\n---- Install python packages/requirements ----"
   sudo -H pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
+  sudo pip3 install PyPDF2
 fi
 sudo pip3 install pipenv
 
@@ -222,6 +223,7 @@ EOF
 
   echo -e "\n---- Install pipenv env -----"
   wget https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
+  sed -i -e '$aPyPDF2==1.26.0' ./requirements.txt
   cp requirements.txt ${OE_HOME}
   sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r ${OE_HOME}/requirements.txt"
 fi
