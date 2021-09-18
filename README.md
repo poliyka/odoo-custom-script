@@ -13,11 +13,6 @@ sudo chmod +x odoo_install_custom.sh
 OE_USER="odoo" #Change your username
 OE_FOLDER="odoo-project" #your project name
 OE_CONFIG="${OE_FOLDER}-server"
-
-# RePath
-OE_HOME="/home/$OE_USER/$OE_FOLDER"
-OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
-
 ```
 
 3. Execute the script
