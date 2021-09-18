@@ -8,7 +8,7 @@ This is fork form [Yenthe666/InstallScript](https://github.com/Yenthe666/Install
 sudo chmod +x odoo_install_custom.sh
 ```
 
-2. Modify the parameters as you wish. In this case just show what different from [Reference](https://github.com/Yenthe666/InstallScript).
+2. Modify the parameters as you wish.
 ```sh
 OE_USER="odoo" #Change your username
 OE_FOLDER="odoo-project" #your project name
