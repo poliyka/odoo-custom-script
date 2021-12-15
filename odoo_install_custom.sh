@@ -216,6 +216,7 @@ EOF
   sed -i '/pypiwin32/d' ./requirements.txt
   sed -i -e '$aPyPDF2==1.26.0' ./requirements.txt
   cp requirements.txt ${OE_HOME}
+  cp Pipfile ${OE_HOME}
   sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r ${OE_HOME}/requirements.txt"
 fi
 
