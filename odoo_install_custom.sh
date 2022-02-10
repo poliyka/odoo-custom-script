@@ -14,7 +14,7 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="poliyka"
 OE_FOLDER="odoo-project"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
@@ -50,7 +50,12 @@ ADMIN_EMAIL="odoo@example.com"
 # Echo Color
 #--------------------------------------------------
 RED="\033[0;31m"
-NC="\033[0m"
+GREEN="\033[0;32m"
+ORANGE="\033[0;33m"
+BLUE="\033[0;34m"
+PURPLE="\033[0;35m"
+CYAN="\033[0;36m"
+NC="\033[0m" # No Color
 
 #--------------------------------------------------
 # Check OE_HOME
@@ -63,24 +68,24 @@ fi
 #--------------------------------------------------
 # Initialize Data
 #--------------------------------------------------
-echo -e "* Force Remove old project conf"
+echo -e "${CYAN}* Force Remove old project conf${NC}"
 sudo rm -f /etc/${OE_CONFIG}.conf
 
-echo -e "* Stoping and Remove Odoo Service"
+echo -e "${CYAN}* Stoping and Remove Odoo Service${NC}"
 sudo su root -c "/etc/init.d/$OE_CONFIG stop"
 sudo rm -f /etc/init.d/$OE_CONFIG
 
 #--------------------------------------------------
 # Update Server
 #--------------------------------------------------
-echo -e "\n---- Update Server ----"
+echo -e "\n${BLUE}==== Update Server ====${NC}"
 sudo apt-get update
 sudo apt-get upgrade -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-echo -e "\n---- Install PostgreSQL Server ----"
+echo -e "\n${BLUE}==== Install PostgreSQL Server ====${NC}"
 sudo apt-get install postgresql postgresql-contrib -y
 
 sudo /etc/init.d/postgresql start
@@ -89,19 +94,19 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 # Install Dependencies
 #--------------------------------------------------
-echo -e "\n--- Installing Python 3 + pip3 --"
+echo -e "\n${BLUE}--- Installing Python 3 + pip3 --${NC}"
 sudo apt-get install git python3 python3-pip build-essential wget make vim python3-dev libpq-dev -y
 sudo apt-get install python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev -y
 sudo apt-get install python3-setuptools node-less libpng12-0 libjpeg-dev gdebi python3-virtualenv -y
 
 if [ $INSTALL_BY_PIPENV_VENV = "False" ]; then
-  echo -e "\n---- Install python packages/requirements ----"
+  echo -e "\n${BLUE}==== Install python packages/requirements ====${NC}"
   sudo -H pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
   sudo pip3 install PyPDF2
 fi
 sudo pip3 install pipenv
 
-echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
+echo -e "\n${BLUE}==== Installing nodeJS NPM and rtlcss for LTR support ====${NC}"
 sudo apt-get install nodejs npm -y
 sudo npm install -g rtlcss
 
@@ -109,7 +114,7 @@ sudo npm install -g rtlcss
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-  echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 14 ----"
+  echo -e "\n${BLUE}==== Install wkhtml and place shortcuts on correct place for ODOO 14 ====${NC}"
   sudo add-apt-repository ppa:linuxuprising/libpng12 << 'EOF'
 \n
 EOF
@@ -119,28 +124,28 @@ else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
 fi
 
-echo -e "\n---- Create ODOO system user ----"
+echo -e "\n${BLUE}==== Create ODOO system user ====${NC}"
 sudo adduser --system --quiet --shell=/bin/bash --home=/home/$OE_USER --gecos 'ODOO' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
-echo -e "* Create project folder"
+echo -e "${CYAN}* Create project folder${NC}"
 sudo su $OE_USER -c "mkdir ~/$OE_FOLDER"
 
-echo -e "\n---- Create Log directory ----"
+echo -e "\n${BLUE}==== Create Log directory ====${NC}"
 sudo mkdir /var/log/$OE_USER
 sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 
 #--------------------------------------------------
 # Install ODOO
 #--------------------------------------------------
-echo -e "\n==== Installing ODOO Server ===="
+echo -e "\n${BLUE}==== Installing ODOO Server ====${NC}"
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
-    echo -e "\n--- Create symlink for node"
+    echo -e "\n${BLUE}--- Create symlink for node${NC}"
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
     sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
@@ -156,19 +161,19 @@ if [ $IS_ENTERPRISE = "True" ]; then
         GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
     done
 
-    echo -e "\n---- Added Enterprise code under $OE_HOME/enterprise/addons ----"
-    echo -e "\n---- Installing Enterprise specific libraries ----"
+    echo -e "\n${BLUE}==== Added Enterprise code under $OE_HOME/enterprise/addons ====${NC}"
+    echo -e "\n${BLUE}==== Installing Enterprise specific libraries ====${NC}"
     sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
     sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
 
-echo -e "\n---- Create custom module directory ----"
+echo -e "\n${BLUE}==== Create custom module directory ====${NC}"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
-  echo -e "\n---- Create Makefile ----"
+  echo -e "\n${BLUE}==== Create Makefile ====${NC}"
   cat <<EOF > $OE_HOME/Makefile
 PYVENV_PREFIX=pipenv run
 db?=odoo
@@ -211,26 +216,26 @@ test:
 
 EOF
 
-  echo -e "\n---- Install pipenv env -----"
+  echo -e "\n${BLUE}==== Install pipenv env ====${NC}"
   wget https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
   sed -i '/pypiwin32/d' ./requirements.txt
   sed -i -e '$aPyPDF2==1.26.0' ./requirements.txt
-  cp requirements.txt ${OE_HOME}
-  cp Pipfile ${OE_HOME}
+  sudo su $OE_USER -c "cp requirements.txt ${OE_HOME}"
+  sudo su $OE_USER -c "cp Pipfile ${OE_HOME}"
   sudo su $OE_USER -c "cd ${OE_HOME}; pipenv install -r ${OE_HOME}/requirements.txt"
 fi
 
-echo -e "\n---- Setting permissions on home folder ----"
+echo -e "\n${BLUE}==== Setting permissions on home folder ====${NC}"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
 
-echo -e "* Create server config file"
+echo -e "${CYAN}* Create server config file${NC}"
 
 
 sudo touch /etc/${OE_CONFIG}.conf
-echo -e "* Creating server config file"
+echo -e "${CYAN}* Creating server config file${NC}"
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
-    echo -e "* Generating random admin password"
+    echo -e "${CYAN}* Generating random admin password${NC}"
     OE_SUPERADMIN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
 fi
 sudo su root -c "printf 'admin_passwd = ${OE_SUPERADMIN}\n' >> /etc/${OE_CONFIG}.conf"
@@ -254,7 +259,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 if [ $INSTALL_BY_PIPENV_VENV = "False" ]; then
-echo -e "* Create init file"
+echo -e "${CYAN}* Create init file${NC}"
 cat <<EOF > ~/$OE_CONFIG
 #!/bin/sh
 ### BEGIN INIT INFO
@@ -323,7 +328,7 @@ EOF
 fi
 
 if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
-echo -e "* Create init file by pipenv venv"
+echo -e "${CYAN}* Create init file by pipenv venv${NC}"
 PYTHON_PATH=$(sudo su $OE_USER -c "cd ${OE_HOME}; pipenv --venv")
 
 cat <<EOF > ~/$OE_CONFIG
@@ -394,19 +399,19 @@ exit 0
 EOF
 fi
 
-echo -e "* Security Init File"
+echo -e "${CYAN}* Security Init File${NC}"
 sudo mv ~/$OE_CONFIG /etc/init.d/$OE_CONFIG
 sudo chmod 755 /etc/init.d/$OE_CONFIG
 sudo chown root: /etc/init.d/$OE_CONFIG
 
-echo -e "* Start ODOO on Startup"
+echo -e "${CYAN}* Start ODOO on Startup${NC}"
 sudo update-rc.d $OE_CONFIG defaults
 
 #--------------------------------------------------
 # Install Nginx if needed
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ]; then
-  echo -e "\n---- Installing and setting up Nginx ----"
+  echo -e "\n${BLUE}==== Installing and setting up Nginx ====${NC}"
   sudo apt install nginx -y
   cat <<EOF > ~/odoo
   server {
@@ -414,7 +419,7 @@ if [ $INSTALL_NGINX = "True" ]; then
 
   # set proper server name after domain set
   server_name $WEBSITE_NAME;
-
+  SERVER
   # Add Headers for odoo proxy mode
   proxy_set_header X-Forwarded-Host \$host;
   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -486,9 +491,9 @@ EOF
   sudo rm /etc/nginx/sites-enabled/default
   sudo service nginx reload
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
-  echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/odoo"
+  echo -e "${GREEN}Done! The Nginx server is up and running. Configuration can be found at${NC} ${ORANGE}/etc/nginx/sites-available/odoo${NC}"
 else
-  echo "Nginx isn't installed due to choice of the user!"
+  echo -e "${GREEN}Nginx isn't installed due to choice of the user!${NC}"
 fi
 
 #--------------------------------------------------
@@ -500,27 +505,27 @@ if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != 
   sudo apt-get install python3-certbot-nginx -y
   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
   sudo service nginx reload
-  echo "SSL/HTTPS is enabled!"
+  echo -e "${GREEN}SSL/HTTPS is enabled!${NC}"
 else
-  echo "SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration!"
+  echo -e "${GREEN}SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration!${NC}"
 fi
 
-echo -e "* Starting Odoo Service"
+echo -e "${CYAN}* Starting Odoo Service${NC}"
 sudo su root -c "/etc/init.d/$OE_CONFIG start"
-echo "-----------------------------------------------------------"
-echo "Done! The Odoo server is up and running. Specifications:"
-echo "Port: $OE_PORT"
-echo "User service: $OE_USER"
-echo "Configuraton file location: /etc/${OE_CONFIG}.conf"
-echo "Logfile location: /var/log/$OE_USER"
-echo "User PostgreSQL: $OE_USER"
-echo "Code location: $OE_USER"
-echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
-echo "Password superadmin (database): $OE_SUPERADMIN"
-echo "Start Odoo service: sudo service $OE_CONFIG start"
-echo "Stop Odoo service: sudo service $OE_CONFIG stop"
-echo "Restart Odoo service: sudo service $OE_CONFIG restart"
+echo -e "${GREEN} -----------------------------------------------------------${NC}"
+echo -e "${GREEN} Done! The Odoo server is up and running. Specifications:${NC}"
+echo -e "${GREEN} Port:${NC} ${ORANGE}$OE_PORT${NC}"
+echo -e "${GREEN} User service:${NC} ${ORANGE}$OE_USER${NC}"
+echo -e "${GREEN} Configuraton file location:${NC} ${ORANGE}/etc/${OE_CONFIG}.conf${NC}"
+echo -e "${GREEN} Logfile location:${NC} ${ORANGE}/var/log/$OE_USER${NC}"
+echo -e "${GREEN} User PostgreSQL:${NC} ${ORANGE}$OE_USER${NC}"
+echo -e "${GREEN} Code location:${NC} ${ORANGE}$OE_USER${NC}"
+echo -e "${GREEN} Addons folder:${NC} ${ORANGE}$OE_USER/$OE_CONFIG/addons/${NC}"
+echo -e "${GREEN} Password superadmin (database):${NC} ${ORANGE}$OE_SUPERADMIN${NC}"
+echo -e "${GREEN} Start Odoo service: sudo service${NC} ${ORANGE}$OE_CONFIG start${NC}"
+echo -e "${GREEN} Stop Odoo service: sudo service${NC} ${ORANGE}$OE_CONFIG stop${NC}"
+echo -e "${GREEN} Restart Odoo service: sudo service${NC} ${ORANGE}$OE_CONFIG restart${NC}"
 if [ $INSTALL_NGINX = "True" ]; then
-  echo "Nginx configuration file: /etc/nginx/sites-available/odoo"
+  echo -e "${GREEN}Nginx configuration file:${NC} ${ORANGE}/etc/nginx/sites-available/odoo${NC}"
 fi
-echo "-----------------------------------------------------------"
+echo -e "${GREEN}-----------------------------------------------------------${NC}"
