@@ -1,4 +1,4 @@
-PYVENV_PREFIX=pipenv run 
+PYVENV_PREFIX=pipenv run
 db?=odoo
 md?=$(md)
 t?=$(t)
@@ -26,13 +26,13 @@ lint:
 	$(PYVENV_PREFIX) flake8 custom
 
 run:
-	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin --log-handler=odoo:$(l) -c $(conf) 
+	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin --log-handler=odoo:$(l) --logfile= -c $(conf)
 
 update:
-	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -u $(md) -d $(db) -c $(conf)
+	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -u $(md) -d $(db) --log-handler=odoo:$(l) --logfile= -c $(conf)
 
 shell:
-	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin shell -d $(db) --addons-path='$(path)' --log-handler=odoo:$(l)
+	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin shell -d $(db) --addons-path='$(path)' --log-handler=odoo:$(l) --logfile=
 
 test:
 	$(PYVENV_PREFIX) python3 odoo-server/odoo-bin -d $(db) --addons-path='$(path)' --test-enable --stop-after-init --test-tags '$(t)'
