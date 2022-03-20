@@ -5,7 +5,7 @@ This is fork form [Yenthe666/InstallScript](https://github.com/Yenthe666/Install
 1. Make the script executable
 
 ```sh
-sudo chmod +x odoo_install_custom.sh
+sudo chmod +x install.sh
 ```
 
 2. Modify the parameters as you wish.
