@@ -175,7 +175,7 @@ sudo su $OE_USER -c "mkdir -p $OE_ADDONS"
 
 if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
   echo -e "\n${BLUE}==== Create Makefile ====${NC}"
-  cat <<EOF > $OE_HOME/Makefile
+  cat <<EOF > $OE_ADDONS/Makefile
 PYVENV_PREFIX=pipenv run
 db?=odoo
 md?=\$(md)
