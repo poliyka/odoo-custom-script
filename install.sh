@@ -177,6 +177,7 @@ if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
   echo -e "\n${BLUE}==== Create Makefile ====${NC}"
   cat <<EOF > $OE_ADDONS/Makefile
 PYVENV_PREFIX=pipenv run
+ODOO_SERVER=${OE_HOME_EXT}
 db?=odoo
 md?=\$(md)
 t?=\$(t)
@@ -204,16 +205,16 @@ lint:
 	\$(PYVENV_PREFIX) flake8 custom
 
 run:
-	\$(PYVENV_PREFIX) python3 ${OE_HOME_EXT}/odoo-bin --log-handler=odoo:\$(l) -c \$(conf)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin --log-handler=odoo:\$(l) -c \$(conf)
 
 update:
-	\$(PYVENV_PREFIX) python3 ${OE_HOME_EXT}/odoo-bin -u \$(md) -d \$(db) -c \$(conf)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -u \$(md) -d \$(db) -c \$(conf)
 
 shell:
-	\$(PYVENV_PREFIX) python3 ${OE_HOME_EXT}/odoo-bin shell -d \$(db) --addons-path='\$(path)' --log-handler=odoo:\$(l)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin shell -d \$(db) --addons-path='\$(path)' --log-handler=odoo:\$(l)
 
 test:
-	\$(PYVENV_PREFIX) python3 ${OE_HOME_EXT}/odoo-bin -d \$(db) --addons-path='\$(path)' --test-enable --stop-after-init --test-tags '\$(t)'
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -d \$(db) --addons-path='\$(path)' --test-enable --stop-after-init --test-tags '\$(t)'
 
 EOF
 
