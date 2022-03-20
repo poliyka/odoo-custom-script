@@ -18,6 +18,8 @@ OE_USER="odoo"
 OE_FOLDER="odoo-project"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
+# Split Addons and Odoo if you wish
+OE_ADDONS="$OE_HOME/custom/addons"
 # Install by pipenv-venv
 INSTALL_BY_PIPENV_VENV="True"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
@@ -169,8 +171,7 @@ if [ $IS_ENTERPRISE = "True" ]; then
 fi
 
 echo -e "\n${BLUE}==== Create custom module directory ====${NC}"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+sudo su $OE_USER -c "mkdir -p $OE_ADDONS"
 
 if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
   echo -e "\n${BLUE}==== Create Makefile ====${NC}"
@@ -180,7 +181,7 @@ db?=odoo
 md?=\$(md)
 t?=\$(t)
 conf?=/etc/${OE_CONFIG}.conf
-path=./custom/addons
+path=${OE_ADDONS}
 
 l=INFO
 # Log levels
@@ -249,7 +250,7 @@ sudo su root -c "printf ';logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
 else
-    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_ADDONS}\n' >> /etc/${OE_CONFIG}.conf"
 fi
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
