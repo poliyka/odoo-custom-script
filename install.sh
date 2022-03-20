@@ -18,7 +18,7 @@ OE_USER="odoo"
 OE_FOLDER="odoo-project"
 OE_HOME="/home/$OE_USER/$OE_FOLDER"
 OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
-# Split Addons and Odoo if you wish
+# Split Addons and Odoo as you wish (default at same folder)
 OE_ADDONS="$OE_HOME/custom/addons"
 # Install by pipenv-venv
 INSTALL_BY_PIPENV_VENV="True"
