@@ -178,11 +178,11 @@ if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
   cat <<EOF > $OE_ADDONS/Makefile
 PYVENV_PREFIX=pipenv run
 ODOO_SERVER=${OE_HOME_EXT}
+ADDONS_PATH=${OE_ADDONS}
 db?=odoo
 md?=\$(md)
 t?=\$(t)
 conf?=/etc/${OE_CONFIG}.conf
-path=${OE_ADDONS}
 
 l=INFO
 # Log levels
@@ -211,10 +211,10 @@ update:
 	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -u \$(md) -d \$(db) -c \$(conf)
 
 shell:
-	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin shell -d \$(db) --addons-path='\$(path)' --log-handler=odoo:\$(l)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin shell -d \$(db) --addons-path='\$(ADDONS_PATH)' --log-handler=odoo:\$(l)
 
 test:
-	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -d \$(db) --addons-path='\$(path)' --test-enable --stop-after-init --test-tags '\$(t)'
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -d \$(db) --addons-path='\$(ADDONS_PATH)' --test-enable --stop-after-init --test-tags '\$(t)'
 
 EOF
 
