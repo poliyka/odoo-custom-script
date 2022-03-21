@@ -15,11 +15,13 @@
 ################################################################################
 
 OE_USER="odoo"
-OE_FOLDER="odoo-project"
-OE_HOME="/home/$OE_USER/$OE_FOLDER"
-OE_HOME_EXT="/home/$OE_USER/$OE_FOLDER/odoo-server"
+OE_PROJECT_NAME="odoo-project"
+
+OE_HOME="/home/$OE_USER"
+OE_ODOO_PATH="/home/$OE_USER/odoo-server"
+OE_PROJECT_PATH="$OE_HOME/${OE_PROJECT_NAME}"
 # Split Addons and Odoo as you wish (default at same folder)
-OE_ADDONS="$OE_HOME/custom/addons"
+OE_ADDONS="${OE_PROJECT_PATH}/addons"
 # Install by pipenv-venv
 INSTALL_BY_PIPENV_VENV="True"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
@@ -38,7 +40,7 @@ INSTALL_NGINX="False"
 OE_SUPERADMIN="admin"
 # Set to "True" to generate a random password, "False" to use the variable in OE_SUPERADMIN
 GENERATE_RANDOM_PASSWORD="False"
-OE_CONFIG="${OE_FOLDER}-server"
+OE_CONFIG="${OE_PROJECT_NAME}-server"
 # Set the website name
 WEBSITE_NAME="_"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
@@ -60,10 +62,25 @@ CYAN="\033[0;36m"
 NC="\033[0m" # No Color
 
 #--------------------------------------------------
-# Check OE_HOME
+# Check OE_ODOO_PATH
 #--------------------------------------------------
-if [[ -d "${OE_HOME}" ]]; then
-  echo -e "${RED}${OE_HOME} already exists.${NC}"
+if [[ -d "${OE_ODOO_PATH}" ]]; then
+  echo -e "${ORANGE}${OE_ODOO_PATH} already exists.${NC}"
+  read -p "Do you want to continue(N/y)?" answer
+  case ${answer:0:1} in
+      y|Y )
+      ;;
+      * )
+          exit 1
+      ;;
+  esac
+fi
+
+#--------------------------------------------------
+# Check OE OE_PROJECT_PATH
+#--------------------------------------------------
+if [[ -d "${OE_PROJECT_PATH}" ]]; then
+  echo -e "${RED}${OE_PROJECT_PATH} already exists.${NC}"
   exit 1
 fi
 
@@ -132,7 +149,7 @@ sudo adduser --system --quiet --shell=/bin/bash --home=/home/$OE_USER --gecos 'O
 sudo adduser $OE_USER sudo
 
 echo -e "${CYAN}* Create project folder${NC}"
-sudo su $OE_USER -c "mkdir ~/$OE_FOLDER"
+sudo su $OE_USER -c "mkdir ~/$OE_PROJECT_NAME"
 
 echo -e "\n${BLUE}==== Create Log directory ====${NC}"
 sudo mkdir /var/log/$OE_USER
@@ -142,15 +159,14 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 # Install ODOO
 #--------------------------------------------------
 echo -e "\n${BLUE}==== Installing ODOO Server ====${NC}"
-sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
+sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_ODOO_PATH/
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
     echo -e "\n${BLUE}--- Create symlink for node${NC}"
     sudo ln -s /usr/bin/nodejs /usr/bin/node
-    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
-    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
+    sudo su $OE_USER -p "mkdir $OE_HOME/enterprise/addons"
 
     GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
     while [[ $GITHUB_RESPONSE == *"Authentication"* ]]; do
@@ -175,9 +191,9 @@ sudo su $OE_USER -c "mkdir -p $OE_ADDONS"
 
 if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
   echo -e "\n${BLUE}==== Create Makefile ====${NC}"
-  cat <<EOF > $OE_ADDONS/Makefile
+  cat <<EOF > $OE_PROJECT_PATH/Makefile
 PYVENV_PREFIX=pipenv run
-ODOO_SERVER=${OE_HOME_EXT}
+ODOO_SERVER=${OE_ODOO_PATH}
 ADDONS_PATH=${OE_ADDONS}
 db?=odoo
 md?=\$(md)
@@ -222,9 +238,9 @@ EOF
   wget https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
   sed -i '/pypiwin32/d' ./requirements.txt
   sed -i -e '$aPyPDF2==1.26.0' ./requirements.txt
-  sudo su $OE_USER -c "cp requirements.txt ${OE_ADDONS}"
-  sudo su $OE_USER -c "cp Pipfile ${OE_ADDONS}"
-  sudo su $OE_USER -c "cd ${OE_ADDONS}; pipenv install -r ${OE_ADDONS}/requirements.txt"
+  sudo su $OE_USER -c "cp requirements.txt ${OE_PROJECT_PATH}"
+  sudo su $OE_USER -c "cp Pipfile ${OE_PROJECT_PATH}"
+  sudo su $OE_USER -c "cd ${OE_PROJECT_PATH}; pipenv install -r ${OE_PROJECT_PATH}/requirements.txt"
 fi
 
 echo -e "\n${BLUE}==== Setting permissions on home folder ====${NC}"
@@ -249,9 +265,9 @@ fi
 sudo su root -c "printf ';logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
-    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_ODOO_PATH}/addons\n' >> /etc/${OE_CONFIG}.conf"
 else
-    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_ADDONS}\n' >> /etc/${OE_CONFIG}.conf"
+    sudo su root -c "printf 'addons_path=${OE_ODOO_PATH}/addons,${OE_ADDONS}\n' >> /etc/${OE_CONFIG}.conf"
 fi
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
@@ -276,7 +292,7 @@ cat <<EOF > ~/$OE_CONFIG
 # Description: ODOO Business Applications
 ### END INIT INFO
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
-DAEMON=$OE_HOME_EXT/odoo-bin
+DAEMON=$OE_ODOO_PATH/odoo-bin
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
 # Specify the user name (Default: odoo).
@@ -331,7 +347,7 @@ fi
 
 if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
 echo -e "${CYAN}* Create init file by pipenv venv${NC}"
-PYTHON_PATH=$(sudo su $OE_USER -c "cd ${OE_HOME}; pipenv --venv")
+PYTHON_PATH=$(sudo su $OE_USER -c "cd ${OE_PROJECT_PATH}; pipenv --venv")
 
 cat <<EOF > ~/$OE_CONFIG
 #!/bin/sh
@@ -348,7 +364,7 @@ cat <<EOF > ~/$OE_CONFIG
 ### END INIT INFO
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 PYTHON_PATH=$PYTHON_PATH/bin/python3
-DAEMON=$OE_HOME_EXT/odoo-bin
+DAEMON=$OE_ODOO_PATH/odoo-bin
 NAME=$OE_CONFIG
 DESC=$OE_CONFIG
 # Specify the user name (Default: odoo).
@@ -521,8 +537,8 @@ echo -e "${GREEN} User service:${NC} ${ORANGE}$OE_USER${NC}"
 echo -e "${GREEN} Configuraton file location:${NC} ${ORANGE}/etc/${OE_CONFIG}.conf${NC}"
 echo -e "${GREEN} Logfile location:${NC} ${ORANGE}/var/log/$OE_USER${NC}"
 echo -e "${GREEN} User PostgreSQL:${NC} ${ORANGE}$OE_USER${NC}"
-echo -e "${GREEN} Code location:${NC} ${ORANGE}$OE_USER${NC}"
-echo -e "${GREEN} Addons folder:${NC} ${ORANGE}$OE_USER/$OE_CONFIG/addons/${NC}"
+echo -e "${GREEN} Odoo location:${NC} ${ORANGE}$OE_ODOO_PATH${NC}"
+echo -e "${GREEN} Addons folder:${NC} ${ORANGE}${OE_ADDONS}${NC}"
 echo -e "${GREEN} Password superadmin (database):${NC} ${ORANGE}$OE_SUPERADMIN${NC}"
 echo -e "${GREEN} Start Odoo service: sudo service${NC} ${ORANGE}$OE_CONFIG start${NC}"
 echo -e "${GREEN} Stop Odoo service: sudo service${NC} ${ORANGE}$OE_CONFIG stop${NC}"
