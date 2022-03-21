@@ -28,10 +28,12 @@ make run
 ```
 
 6. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
+
+- Replace odoo-project by your folder name of project
+- Replace "python": "/home/(your username)/...
+- Replace RhqrRy0p by your virtualenvs environment
+
 ```json
-// Replace odoo-project by your folder name of project
-// Replace "python": "/home/(your username)/...
-// Replace RhqrRy0p by your virtualenvs environment
 {
     "version": "0.2.0",
     "configurations": [
