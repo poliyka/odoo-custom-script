@@ -194,7 +194,6 @@ if [ $INSTALL_BY_PIPENV_VENV = "True" ]; then
   cat <<EOF > $OE_PROJECT_PATH/Makefile
 PYVENV_PREFIX=pipenv run
 ODOO_SERVER=${OE_ODOO_PATH}
-ADDONS_PATH=${OE_ADDONS}
 db?=odoo
 md?=\$(md)
 t?=\$(t)
@@ -221,16 +220,16 @@ lint:
 	\$(PYVENV_PREFIX) flake8 custom
 
 run:
-	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin --log-handler=odoo:\$(l) -c \$(conf)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin --log-handler=odoo:\$(l) --logfile= -c \$(conf)
 
 update:
-	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -u \$(md) -d \$(db) -c \$(conf)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -u \$(md) -d \$(db) --logfile= -c \$(conf)
 
 shell:
-	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin shell -d \$(db) --addons-path='\$(ADDONS_PATH)' --log-handler=odoo:\$(l)
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin shell -d \$(db) -c \$(conf) --log-handler=odoo:\$(l) --logfile=
 
 test:
-	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -d \$(db) --addons-path='\$(ADDONS_PATH)' --test-enable --stop-after-init --test-tags '\$(t)'
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -d \$(db) -c \$(conf) --logfile= --test-enable --stop-after-init --test-tags '\$(t)'
 
 EOF
 
@@ -262,7 +261,7 @@ if [ $OE_VERSION > "11.0" ];then
 else
     sudo su root -c "printf 'xmlrpc_port = ${OE_PORT}\n' >> /etc/${OE_CONFIG}.conf"
 fi
-sudo su root -c "printf ';logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 
 if [ $IS_ENTERPRISE = "True" ]; then
     sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_ODOO_PATH}/addons\n' >> /etc/${OE_CONFIG}.conf"
