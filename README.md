@@ -11,8 +11,7 @@ sudo chmod +x install.sh
 2. Modify the parameters as you wish.
 ```sh
 OE_USER="odoo" #your system username
-OE_FOLDER="odoo-project" #your project name
-OE_CONFIG="${OE_FOLDER}-server"
+OE_PROJECT_NAME="odoo-project" #your project name
 ```
 
 3. Execute the script
@@ -29,10 +28,10 @@ make run
 ```
 
 6. If you using `Visual Studio Code`. Move `.vscode` folder in your project and modify the `launch.json`, then you can press `F5` start with debug mode.
-```sh
-# Change odoo-project to your folder name of project
-# Change "python": "/home/(your username)/...
-# Change RhqrRy0p to your virtualenvs environment
+```json
+# Replace odoo-project by your folder name of project
+# Replace "python": "/home/(your username)/...
+# Replace RhqrRy0p by your virtualenvs environment
 {
     "version": "0.2.0",
     "configurations": [
@@ -40,12 +39,12 @@ make run
             "name": "odoo",
             "type": "python",
             "request": "launch",
-            "python": "/home/odoo/.local/share/virtualenvs/odoo-project-RhqrRy0p/bin/python3.8",
-            "program": "~/odoo-project/odoo-server/odoo-bin",
+            "python": "/home/{odoo}/.local/share/virtualenvs/{odoo-project-RhqrRy0p}/bin/python3.8",
+            "program": "~/{odoo-server}/odoo-bin",
             "args": [
                 "--syslog",
                 "-c",
-                "/etc/odoo-server.conf"
+                "/etc/{odoo-server}.conf"
             ]
         }
     ]
