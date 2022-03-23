@@ -222,6 +222,9 @@ lint:
 run:
 	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin --log-handler=odoo:\$(l) --logfile= -c \$(conf)
 
+install:
+	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER) --log-handler=odoo:\$(l) -c \$(conf) --logfile= -d \$(db) -i \$(md) --stop-after-init
+
 update:
 	\$(PYVENV_PREFIX) python3 \$(ODOO_SERVER)/odoo-bin -u \$(md) -d \$(db) --logfile= -c \$(conf)
 
@@ -238,7 +241,6 @@ EOF
   sed -i '/pypiwin32/d' ./requirements.txt
   sed -i -e '$aPyPDF2==1.26.0' ./requirements.txt
   sudo su $OE_USER -c "cp requirements.txt ${OE_PROJECT_PATH}"
-  sudo su $OE_USER -c "cp Pipfile ${OE_PROJECT_PATH}"
   sudo su $OE_USER -c "cd ${OE_PROJECT_PATH}; pipenv install -r ${OE_PROJECT_PATH}/requirements.txt"
 fi
 
