@@ -133,7 +133,7 @@ sudo npm install -g rtlcss
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-  echo -e "\n${BLUE}==== Install wkhtml and place shortcuts on correct place for ODOO 14 ====${NC}"
+  echo -e "\n${BLUE}==== Install wkhtml and place shortcuts on correct place for ODOO ${OE_VERSION} ====${NC}"
   sudo add-apt-repository ppa:linuxuprising/libpng12 << 'EOF'
 \n
 EOF
